@@ -230,9 +230,10 @@ let carrinho=[]
 let total=0
 
 let dados=JSON.parse(localStorage.getItem("menu"))||{
-
-categorias:{
-"Refeições":[
+  
+  if(dados.categorias["Refeições"]){
+mostrarCategoria("Refeições")
+}
 {nome:"Chapa mista",preco:20,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
 {nome:"Empanado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
 {nome:"Bife acebolado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
