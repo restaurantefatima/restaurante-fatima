@@ -10,38 +10,53 @@
 <style>
 
 :root{
---corPrincipal:#d62828;
---corBotao:#2a9d8f;
---corFundo:#f5f5f5;
+--roxo:#6a0dad;
+--lilas:#b784f7;
+--fundo:#f6f2ff;
+--botao:#7b2cbf;
 }
 
 body{
 margin:0;
 font-family:Arial;
-background:var(--corFundo);
+background:var(--fundo);
 }
 
 header{
-background:var(--corPrincipal);
+background:linear-gradient(90deg,var(--roxo),var(--lilas));
 color:white;
 padding:15px;
-text-align:center;
-position:relative;
+font-size:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
-#menuAdmin{
-position:absolute;
-right:15px;
-top:10px;
-font-size:25px;
+#adminBtn{
+font-size:24px;
 cursor:pointer;
 }
 
 #capa{
-width:100%;
-height:200px;
+height:180px;
 background-size:cover;
 background-position:center;
+}
+
+#abas{
+display:flex;
+overflow-x:auto;
+background:white;
+padding:10px;
+gap:10px;
+}
+
+#abas button{
+background:#eee;
+border:none;
+padding:8px 15px;
+border-radius:20px;
+font-weight:bold;
 }
 
 .container{
@@ -50,15 +65,15 @@ padding:15px;
 
 .card{
 background:white;
-border-radius:10px;
+border-radius:12px;
 margin-bottom:15px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 overflow:hidden;
-box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
 .card img{
 width:100%;
-height:180px;
+height:170px;
 object-fit:cover;
 }
 
@@ -67,49 +82,33 @@ padding:10px;
 }
 
 button{
-background:var(--corBotao);
+background:var(--botao);
 color:white;
 border:none;
 padding:10px;
 border-radius:6px;
 width:100%;
-margin-top:8px;
-}
-
-input,textarea{
-width:100%;
-padding:8px;
-margin-bottom:10px;
-border-radius:5px;
-border:1px solid #ccc;
+margin-top:6px;
 }
 
 #carrinho{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
 background:white;
-padding:15px;
-border-radius:10px;
-margin-top:20px;
-}
-
-.item{
-display:flex;
-justify-content:space-between;
-margin-bottom:5px;
-}
-
-.remover{
-color:red;
-cursor:pointer;
+padding:10px;
+box-shadow:0 -3px 10px rgba(0,0,0,0.1);
 }
 
 #admin{
+display:none;
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.7);
-display:none;
 justify-content:center;
 align-items:center;
 }
@@ -119,9 +118,22 @@ background:white;
 padding:20px;
 width:90%;
 max-width:400px;
-border-radius:10px;
 max-height:90%;
 overflow:auto;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:8px;
+margin-bottom:8px;
+}
+
+.pedido{
+border:1px solid #ddd;
+padding:10px;
+margin-bottom:10px;
+border-radius:6px;
 }
 
 </style>
@@ -132,39 +144,37 @@ overflow:auto;
 
 <header>
 
-<h2>🍽 Restaurante e Conv. da Fátima</h2>
+🍽 Restaurante e Conv. da Fátima
 
-<div id="menuAdmin" onclick="abrirAdmin()">⋮</div>
+<div id="adminBtn" onclick="abrirAdmin()">⋮</div>
 
 </header>
 
 <div id="capa"></div>
 
+<div id="abas"></div>
+
 <div class="container">
 
-<h3>Informações do cliente</h3>
+<h3>Dados do cliente</h3>
 
-<input id="nome" placeholder="Seu nome">
+<input id="nome" placeholder="Nome">
 
-<input id="endereco" placeholder="Rua / Travessa">
+<input id="endereco" placeholder="Endereço">
 
-<input id="numero" placeholder="Número da residência">
+<input id="numero" placeholder="Número da casa">
 
-<textarea id="obs" placeholder="Observação"></textarea>
+<button onclick="pegarLocalizacao()">Usar minha localização 📍</button>
 
 <div id="cardapio"></div>
 
+</div>
+
 <div id="carrinho">
 
-<h3>🛒 Carrinho</h3>
-
-<div id="lista"></div>
-
-<p>Total: R$ <span id="total">0</span></p>
+<b>Total: R$ <span id="total">0</span></b>
 
 <button onclick="enviarPedido()">Enviar Pedido</button>
-
-</div>
 
 </div>
 
@@ -180,7 +190,7 @@ overflow:auto;
 
 <div id="controle" style="display:none">
 
-<h4>Nova refeição</h4>
+<h4>Adicionar refeição</h4>
 
 <input id="nomeComida" placeholder="Nome">
 
@@ -188,29 +198,21 @@ overflow:auto;
 
 <input id="fotoComida" placeholder="Link da foto">
 
+<select id="categoriaSelect"></select>
+
 <button onclick="addComida()">Adicionar</button>
 
-<h4>Nova categoria</h4>
+<h4>Editar foto existente</h4>
 
-<input id="categoriaNome" placeholder="Nome da categoria">
+<input id="nomeEditar" placeholder="Nome da refeição">
 
-<button onclick="addCategoria()">Criar</button>
+<input id="novaFoto" placeholder="Nova foto">
 
-<h4>Alterar cores</h4>
+<button onclick="editarFoto()">Salvar foto</button>
 
-<input id="corPrincipal" type="color">
+<h4>Fila de pedidos</h4>
 
-<input id="corBotao" type="color">
-
-<input id="corFundo" type="color">
-
-<button onclick="salvarCores()">Salvar cores</button>
-
-<h4>Alterar capa</h4>
-
-<input id="novaCapa" placeholder="Link da imagem">
-
-<button onclick="trocarCapa()">Salvar capa</button>
+<div id="filaPedidos"></div>
 
 </div>
 
@@ -224,19 +226,19 @@ overflow:auto;
 
 let senhaCorreta="120990"
 
-let pedido=[]
+let carrinho=[]
 let total=0
 
-let dados=JSON.parse(localStorage.getItem("menu")) || {
+let dados=JSON.parse(localStorage.getItem("menu"))||{
 
 categorias:{
 "Refeições":[
-{nome:"Chapa Mista",preco:15,foto:"blob:https://web.whatsapp.com/33b8c9d3-e1aa-4ddb-bfb4-0c3f1c63df76"},
-{nome:"Empanado",preco:10,foto:"blob:https://web.whatsapp.com/ea13cbc1-0aea-439f-9541-decb429225ff"},
-{nome:"Bife Acebolado",preco:17,foto:"blob:https://web.whatsapp.com/77099dc6-31a3-4e9d-a1cd-e1f92cd83a2c"},
-{nome:"Cozidão",preco:20,foto:"blob:https://web.whatsapp.com/54c44d11-3e9b-4aa9-8d8b-42752078188d"},
-{nome:"Assado de Panela",preco:20,foto:"blob:https://web.whatsapp.com/b8a4cb80-aa6c-4dae-876f-faf878a5c4c9"},
-{nome:"Vatapá",preco:10,foto:"blob:https://web.whatsapp.com/194a6487-c1fa-467e-b274-53496f748b3d"}
+{nome:"Chapa mista",preco:20,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
+{nome:"Empanado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
+{nome:"Bife acebolado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
+{nome:"Cozidão",preco:22,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
+{nome:"Assado de panela",preco:22,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
+{nome:"Vatapá",preco:15,foto:"https://i.imgur.com/5KXKQ9k.jpg"}
 ]
 }
 
@@ -248,17 +250,37 @@ localStorage.setItem("menu",JSON.stringify(dados))
 
 }
 
-function render(){
+function carregarAbas(){
+
+let abas=document.getElementById("abas")
+
+abas.innerHTML=""
+
+for(let cat in dados.categorias){
+
+abas.innerHTML+=<button onclick="mostrarCategoria('${cat}')">${cat}</button>
+
+}
+
+let select=document.getElementById("categoriaSelect")
+
+select.innerHTML=""
+
+for(let cat in dados.categorias){
+
+select.innerHTML+=<option>${cat}</option>
+
+}
+
+}
+
+function mostrarCategoria(cat){
 
 let area=document.getElementById("cardapio")
 
 area.innerHTML=""
 
-for(let cat in dados.categorias){
-
-area.innerHTML+="<h2>"+cat+"</h2>"
-
-dados.categorias[cat].forEach((comida,i)=>{
+dados.categorias[cat].forEach(comida=>{
 
 area.innerHTML+=`
 
@@ -272,7 +294,11 @@ area.innerHTML+=`
 
 <p>R$ ${comida.preco}</p>
 
-<button onclick="addCarrinho('${comida.nome}',${comida.preco})">Adicionar</button>
+<button onclick="addCarrinho('${comida.nome}',${comida.preco})">
+
+Adicionar
+
+</button>
 
 </div>
 
@@ -281,54 +307,16 @@ area.innerHTML+=`
 `
 
 })
-
-}
 
 }
 
 function addCarrinho(nome,preco){
 
-pedido.push({nome,preco})
+carrinho.push({nome,preco})
 
 total+=preco
 
-atualizarCarrinho()
-
-}
-
-function atualizarCarrinho(){
-
-let lista=document.getElementById("lista")
-
-lista.innerHTML=""
-
-pedido.forEach((item,i)=>{
-
-lista.innerHTML+=`
-
-<div class="item">
-
-${item.nome} - R$ ${item.preco}
-
-<span class="remover" onclick="removerItem(${i})">X</span>
-
-</div>
-
-`
-
-})
-
 document.getElementById("total").innerText=total
-
-}
-
-function removerItem(i){
-
-total-=pedido[i].preco
-
-pedido.splice(i,1)
-
-atualizarCarrinho()
 
 }
 
@@ -337,27 +325,69 @@ function enviarPedido(){
 let nome=document.getElementById("nome").value
 let endereco=document.getElementById("endereco").value
 let numero=document.getElementById("numero").value
-let obs=document.getElementById("obs").value
 
-let msg="Pedido Restaurante da Fátima%0A%0A"
+let pedido={
 
-msg+="Cliente: "+nome+"%0A"
+cliente:nome,
+endereco:endereco,
+numero:numero,
+itens:carrinho,
+tempo:Date.now()
 
-msg+="Endereço: "+endereco+" Nº "+numero+"%0A%0A"
+}
 
-msg+="Pedido:%0A"
+let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[]
 
-pedido.forEach(i=>{
+pedidos.push(pedido)
+
+localStorage.setItem("pedidos",JSON.stringify(pedidos))
+
+let msg="Pedido Restaurante da Fátima%0A"
+
+carrinho.forEach(i=>{
 
 msg+="- "+i.nome+"%0A"
 
 })
 
-msg+="%0ATotal: R$ "+total+"%0A"
-
-msg+="Obs: "+obs
-
 window.open("https://wa.me/5591986243010?text="+msg)
+
+}
+
+function mostrarFila(){
+
+let lista=document.getElementById("filaPedidos")
+
+let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[]
+
+pedidos.sort((a,b)=>a.tempo-b.tempo)
+
+lista.innerHTML=""
+
+pedidos.forEach((p,i)=>{
+
+lista.innerHTML+=`
+
+<div class="pedido">
+
+<b>Prioridade:</b> ${i+1}<br>
+Cliente: ${p.cliente}
+
+</div>
+
+`
+
+})
+
+}
+
+function pegarLocalizacao(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+alert("Localização capturada")
+
+})
 
 }
 
@@ -379,10 +409,6 @@ if(document.getElementById("senha").value===senhaCorreta){
 
 document.getElementById("controle").style.display="block"
 
-}else{
-
-alert("Senha incorreta")
-
 }
 
 }
@@ -392,110 +418,44 @@ function addComida(){
 let nome=document.getElementById("nomeComida").value
 let preco=document.getElementById("precoComida").value
 let foto=document.getElementById("fotoComida").value
+let cat=document.getElementById("categoriaSelect").value
 
-dados.categorias["Refeições"].push({nome,preco,foto})
-
-salvar()
-
-render()
-
-}
-
-function addCategoria(){
-
-let nome=document.getElementById("categoriaNome").value
-
-dados.categorias[nome]=[]
+dados.categorias[cat].push({nome,preco,foto})
 
 salvar()
 
-render()
+carregarAbas()
 
 }
 
-function salvarCores(){
+function editarFoto(){
 
-let corPrincipal=document.getElementById("corPrincipal").value
-let corBotao=document.getElementById("corBotao").value
-let corFundo=document.getElementById("corFundo").value
+let nome=document.getElementById("nomeEditar").value
+let nova=document.getElementById("novaFoto").value
 
-document.documentElement.style.setProperty('--corPrincipal',corPrincipal)
-document.documentElement.style.setProperty('--corBotao',corBotao)
-document.documentElement.style.setProperty('--corFundo',corFundo)
+for(let cat in dados.categorias){
 
-localStorage.setItem("cores",JSON.stringify({corPrincipal,corBotao,corFundo}))
+dados.categorias[cat].forEach(item=>{
 
-}
+if(item.nome==nome){
 
-function carregarCores(){
-
-let cores=JSON.parse(localStorage.getItem("cores"))
-
-if(cores){
-
-document.documentElement.style.setProperty('--corPrincipal',cores.corPrincipal)
-document.documentElement.style.setProperty('--corBotao',cores.corBotao)
-document.documentElement.style.setProperty('--corFundo',cores.corFundo)
+item.foto=nova
 
 }
-
-}
-
-function trocarCapa(){
-
-let capa=document.getElementById("novaCapa").value
-
-document.getElementById("capa").style.backgroundImage="url("+capa+")"
-
-localStorage.setItem("capa",capa)
-
-}
-
-function carregarCapa(){
-
-let capa=localStorage.getItem("capa")
-
-if(capa){
-
-document.getElementById("capa").style.backgroundImage="url("+capa+")"
-
-}
-
-}
-
-carregarCores()
-carregarCapa()
-render()
-  function mostrarFila(){
-
-let lista=document.getElementById("filaPedidos")
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[]
-
-pedidos.sort((a,b)=>a.tempo-b.tempo)
-
-lista.innerHTML=""
-
-pedidos.forEach((p,i)=>{
-
-lista.innerHTML+=`
-
-<div class="pedido">
-
-<b>Prioridade:</b> ${i+1}<br>
-<b>Cliente:</b> ${p.cliente}<br>
-<b>Endereço:</b> ${p.endereco}, ${p.numero}<br>
-<b>Hora:</b> ${p.hora}<br>
-<b>Itens:</b> ${p.itens.map(i=>i.nome).join(", ")}
-
-</div>
-
-`
 
 })
 
 }
-  setInterval(mostrarFila,3000)
+
+salvar()
+
+}
+
+carregarAbas()
+
+mostrarCategoria("Refeições")
+
+setInterval(mostrarFila,3000)
 
 </script>
 
