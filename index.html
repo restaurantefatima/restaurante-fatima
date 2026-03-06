@@ -1,471 +1,251 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Restaurante e Conv. da Fátima</title>
+<title>Cardápio Digital</title>
 
 <style>
 
-:root{
---roxo:#6a0dad;
---lilas:#b784f7;
---fundo:#f6f2ff;
---botao:#7b2cbf;
-}
-
 body{
+font-family: Arial;
 margin:0;
-font-family:Arial;
-background:var(--fundo);
+background:#f6f3ff;
 }
 
 header{
-background:linear-gradient(90deg,var(--roxo),var(--lilas));
+background:linear-gradient(45deg,#6a00ff,#a64dff);
 color:white;
 padding:15px;
-font-size:20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-#adminBtn{
-font-size:24px;
-cursor:pointer;
-}
-
-#capa{
-height:180px;
-background-size:cover;
-background-position:center;
-}
-
-#abas{
-display:flex;
-overflow-x:auto;
-background:white;
-padding:10px;
-gap:10px;
-}
-
-#abas button{
-background:#eee;
-border:none;
-padding:8px 15px;
-border-radius:20px;
-font-weight:bold;
+font-size:22px;
+text-align:center;
 }
 
 .container{
 padding:15px;
 }
 
-.card{
+.produto{
 background:white;
-border-radius:12px;
+border-radius:10px;
+padding:10px;
 margin-bottom:15px;
+display:flex;
+gap:10px;
 box-shadow:0 3px 10px rgba(0,0,0,0.1);
-overflow:hidden;
 }
 
-.card img{
-width:100%;
-height:170px;
+.produto img{
+width:90px;
+height:90px;
+border-radius:10px;
 object-fit:cover;
 }
 
 .info{
-padding:10px;
+flex:1;
 }
 
 button{
-background:var(--botao);
+background:#7b2cff;
 color:white;
 border:none;
-padding:10px;
+padding:8px 10px;
 border-radius:6px;
-width:100%;
-margin-top:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#5a00d6;
 }
 
 #carrinho{
 position:fixed;
 bottom:0;
 left:0;
-width:100%;
+right:0;
 background:white;
 padding:10px;
-box-shadow:0 -3px 10px rgba(0,0,0,0.1);
+box-shadow:0 -3px 10px rgba(0,0,0,0.2);
 }
 
-#admin{
+.admin{
+position:fixed;
+top:10px;
+right:10px;
+background:black;
+color:white;
+padding:8px;
+border-radius:6px;
+}
+
+.painel{
 display:none;
 position:fixed;
 top:0;
 left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-justify-content:center;
-align-items:center;
-}
-
-#painel{
+right:0;
+bottom:0;
 background:white;
-padding:20px;
-width:90%;
-max-width:400px;
-max-height:90%;
 overflow:auto;
-border-radius:10px;
+padding:20px;
 }
 
 input{
 width:100%;
 padding:8px;
-margin-bottom:8px;
-}
-
-.pedido{
-border:1px solid #ddd;
-padding:10px;
 margin-bottom:10px;
-border-radius:6px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
-
-🍽 Restaurante e Conv. da Fátima
-
-<div id="adminBtn" onclick="abrirAdmin()">⋮</div>
-
+🍔 Meu Cardápio
 </header>
 
-<div id="capa"></div>
-
-<div id="abas"></div>
-
-<div class="container">
-
-<h3>Dados do cliente</h3>
-
-<input id="nome" placeholder="Nome">
-
-<input id="endereco" placeholder="Endereço">
-
-<input id="numero" placeholder="Número da casa">
-
-<button onclick="pegarLocalizacao()">Usar minha localização 📍</button>
-
-<div id="cardapio"></div>
-
+<div class="admin" onclick="abrirAdmin()">
+⚙️ Painel
 </div>
+
+<div class="container" id="cardapio"></div>
 
 <div id="carrinho">
-
-<b>Total: R$ <span id="total">0</span></b>
-
-<button onclick="enviarPedido()">Enviar Pedido</button>
-
+<b>Carrinho:</b>
+<span id="total">0</span> itens
+<button onclick="finalizar()">Finalizar Pedido</button>
 </div>
 
-<div id="admin">
+<div class="painel" id="painel">
 
-<div id="painel">
+<h2>Painel do Dono</h2>
 
-<h3>Painel do Dono</h3>
+<input id="nome" placeholder="Nome do produto">
+<input id="preco" placeholder="Preço">
+<input id="foto" placeholder="URL da foto">
 
-<input id="senha" placeholder="Senha">
+<button onclick="addProduto()">Adicionar Produto</button>
 
-<button onclick="login()">Entrar</button>
-
-<div id="controle" style="display:none">
-
-<h4>Adicionar refeição</h4>
-
-<input id="nomeComida" placeholder="Nome">
-
-<input id="precoComida" placeholder="Preço">
-
-<input id="fotoComida" placeholder="Link da foto">
-
-<select id="categoriaSelect"></select>
-
-<button onclick="addComida()">Adicionar</button>
-
-<h4>Editar foto existente</h4>
-
-<input id="nomeEditar" placeholder="Nome da refeição">
-
-<input id="novaFoto" placeholder="Nova foto">
-
-<button onclick="editarFoto()">Salvar foto</button>
-
-<h4>Fila de pedidos</h4>
-
-<div id="filaPedidos"></div>
-
-</div>
+<hr>
 
 <button onclick="fecharAdmin()">Fechar</button>
 
 </div>
 
-</div>
-
 <script>
 
-let senhaCorreta="120990"
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [
 
-let carrinho=[]
-let total=0
+{
+nome:"Coxinha",
+preco:3,
+foto:"https://i.imgur.com/V6Q0L3C.png"
+},
 
-let dados=JSON.parse(localStorage.getItem("menu"))||{
-  
-  if(dados.categorias["Refeições"]){
-mostrarCategoria("Refeições")
+{
+nome:"Pastel",
+preco:4,
+foto:"https://i.imgur.com/3XK4XyP.png"
 }
-let dados=JSON.parse(localStorage.getItem("menu"))||{
 
-categorias:{
-"Refeições":[
-{nome:"Chapa mista",preco:20,foto:"https://via.placeholder.com/400"},
-{nome:"Empanado",preco:18,foto:"https://via.placeholder.com/400"},
-{nome:"Bife acebolado",preco:18,foto:"https://via.placeholder.com/400"},
-{nome:"Cozidão",preco:22,foto:"https://via.placeholder.com/400"},
-{nome:"Assado de panela",preco:22,foto:"https://via.placeholder.com/400"},
-{nome:"Vatapá",preco:15,foto:"https://via.placeholder.com/400"}
 ]
 
-}
+let carrinho = []
 
-}
-]
-}
+function render(){
 
-}
+let html=""
 
-function salvar(){
+produtos.forEach((p,i)=>{
 
-localStorage.setItem("menu",JSON.stringify(dados))
+html+=`
+<div class="produto">
 
-}
-
-function carregarAbas(){
-
-let abas=document.getElementById("abas")
-
-abas.innerHTML=""
-
-for(let cat in dados.categorias){
-
-abas.innerHTML+=<button onclick="mostrarCategoria('${cat}')">${cat}</button>
-
-}
-
-let select=document.getElementById("categoriaSelect")
-
-select.innerHTML=""
-
-for(let cat in dados.categorias){
-
-select.innerHTML+=<option>${cat}</option>
-
-}
-
-}
-
-function mostrarCategoria(cat){
-
-let area=document.getElementById("cardapio")
-
-area.innerHTML=""
-
-dados.categorias[cat].forEach(comida=>{
-
-area.innerHTML+=`
-
-<div class="card">
-
-<img src="${comida.foto}">
+<img src="${p.foto}">
 
 <div class="info">
 
-<h3>${comida.nome}</h3>
+<h3>${p.nome}</h3>
 
-<p>R$ ${comida.preco}</p>
+<p>R$ ${p.preco}</p>
 
-<button onclick="addCarrinho('${comida.nome}',${comida.preco})">
-
+<button onclick="comprar(${i})">
 Adicionar
-
 </button>
 
 </div>
 
 </div>
-
 `
 
 })
 
-}
-
-function addCarrinho(nome,preco){
-
-carrinho.push({nome,preco})
-
-total+=preco
-
-document.getElementById("total").innerText=total
+document.getElementById("cardapio").innerHTML=html
 
 }
 
-function enviarPedido(){
+render()
 
-let nome=document.getElementById("nome").value
-let endereco=document.getElementById("endereco").value
-let numero=document.getElementById("numero").value
+function comprar(i){
 
-let pedido={
+carrinho.push(produtos[i])
 
-cliente:nome,
-endereco:endereco,
-numero:numero,
-itens:carrinho,
-tempo:Date.now()
+document.getElementById("total").innerText=carrinho.length
 
 }
 
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[]
+function finalizar(){
 
-pedidos.push(pedido)
+let mensagem="Pedido:%0A"
 
-localStorage.setItem("pedidos",JSON.stringify(pedidos))
+carrinho.forEach(p=>{
 
-let msg="Pedido Restaurante da Fátima%0A"
-
-carrinho.forEach(i=>{
-
-msg+="- "+i.nome+"%0A"
+mensagem+=p.nome+" - R$"+p.preco+"%0A"
 
 })
 
-window.open("https://wa.me/5591986243010?text="+msg)
-
-}
-
-function mostrarFila(){
-
-let lista=document.getElementById("filaPedidos")
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[]
-
-pedidos.sort((a,b)=>a.tempo-b.tempo)
-
-lista.innerHTML=""
-
-pedidos.forEach((p,i)=>{
-
-lista.innerHTML+=`
-
-<div class="pedido">
-
-<b>Prioridade:</b> ${i+1}<br>
-Cliente: ${p.cliente}
-
-</div>
-
-`
-
-})
-
-}
-
-function pegarLocalizacao(){
-
-navigator.geolocation.getCurrentPosition(function(pos){
-
-alert("Localização capturada")
-
-})
+window.open("https://wa.me/5591999999999?text="+mensagem)
 
 }
 
 function abrirAdmin(){
 
-document.getElementById("admin").style.display="flex"
+let senha=prompt("Digite a senha")
+
+if(senha=="1234"){
+
+document.getElementById("painel").style.display="block"
+
+}
 
 }
 
 function fecharAdmin(){
 
-document.getElementById("admin").style.display="none"
+document.getElementById("painel").style.display="none"
 
 }
 
-function login(){
+function addProduto(){
 
-if(document.getElementById("senha").value===senhaCorreta){
+let nome=document.getElementById("nome").value
 
-document.getElementById("controle").style.display="block"
+let preco=document.getElementById("preco").value
 
-}
+let foto=document.getElementById("foto").value
 
-}
+produtos.push({nome,preco,foto})
 
-function addComida(){
+localStorage.setItem("produtos",JSON.stringify(produtos))
 
-let nome=document.getElementById("nomeComida").value
-let preco=document.getElementById("precoComida").value
-let foto=document.getElementById("fotoComida").value
-let cat=document.getElementById("categoriaSelect").value
+render()
 
-dados.categorias[cat].push({nome,preco,foto})
-
-salvar()
-
-carregarAbas()
+alert("Produto adicionado!")
 
 }
-
-function editarFoto(){
-
-let nome=document.getElementById("nomeEditar").value
-let nova=document.getElementById("novaFoto").value
-
-for(let cat in dados.categorias){
-
-dados.categorias[cat].forEach(item=>{
-
-if(item.nome==nome){
-
-item.foto=nova
-
-}
-
-})
-
-}
-
-salvar()
-
-}
-
-carregarAbas()
-
-mostrarCategoria("Refeições")
-
-setInterval(mostrarFila,3000)
 
 </script>
 
