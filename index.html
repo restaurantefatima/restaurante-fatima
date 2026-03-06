@@ -1,415 +1,212 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cardápio Digital - Refeições</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cardápio Digital</title>
+
 <style>
-  :root{
-    --primary:#7b2cff;
-    --primary-2:#a64dff;
-    --bg:#f6f3ff;
-    --card:#fff;
-    --muted:#666;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background:var(--bg);
-    color:#222;
-    -webkit-font-smoothing:antialiased;
-  }
-  header{
-    background:linear-gradient(135deg,var(--primary),var(--primary-2));
-    color:white;
-    padding:18px 16px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-  header h1{font-size:18px;margin:0}
-  .topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .admin{background:#111;color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px}
-  .container{max-width:980px;margin:18px auto;padding:0 14px}
-  .categories{display:flex;gap:10px;overflow:auto;padding:10px 0 18px}
-  .categories button{
-    border:0;background:#fff;padding:8px 12px;border-radius:20px;cursor:pointer;
-    box-shadow:0 2px 6px rgba(0,0,0,0.06);
-  }
-  .categories button.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:white}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-  .card{
-    background:var(--card);border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;
-    box-shadow:0 6px 18px rgba(19,12,55,0.06);
-  }
-  .thumb{width:96px;height:96px;border-radius:10px;overflow:hidden;flex:0 0 96px;background:#eee;display:flex;align-items:center;justify-content:center}
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .meta{flex:1}
-  .meta h3{margin:0 0 6px;font-size:16px}
-  .meta p{margin:0;color:var(--muted);font-size:14px}
-  .meta .price{margin-top:8px;font-weight:700}
-  .btn{background:var(--primary);color:white;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
-  .cartbar{
-    position:fixed;left:12px;right:12px;bottom:12px;background:linear-gradient(90deg,#fff,#fff);
-    padding:12px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;
-    box-shadow:0 10px 30px rgba(11,6,30,0.12);
-    gap:12px;z-index:60;
-  }
-  .cart-summary{font-weight:700}
-  .badge{background:#ff4757;color:#fff;padding:4px 8px;border-radius:999px;font-weight:700;margin-left:8px}
-  /* painel admin */
-  .panel{
-    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:80;padding:30px;
-  }
-  .panel .inner{
-    max-width:900px;margin:0 auto;background:#fff;border-radius:12px;padding:18px;
-    box-shadow:0 20px 40px rgba(12,8,40,0.3);overflow:auto;max-height:90vh;
-  }
-  .panel h2{margin-top:0}
-  .row{display:flex;gap:10px}
-  .col{flex:1}
-  input[type=text], input[type=number], select, textarea{
-    width:100%;padding:8px;border-radius:8px;border:1px solid #e6e6e9;margin-bottom:8px;
-  }
-  .small{font-size:13px;color:var(--muted)}
-  .product-list{margin-top:12px}
-  .product-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:#fafafa;margin-bottom:8px}
-  .product-item img{width:56px;height:56px;object-fit:cover;border-radius:8px}
-  footer{padding:28px 8px;text-align:center;color:var(--muted);font-size:14px;margin-top:60px}
-  @media(max-width:520px){
-    .row{flex-direction:column}
-    .thumb{width:78px;height:78px}
-  }
+
+body{
+font-family:Arial;
+margin:0;
+background:#f3f0ff;
+}
+
+header{
+background:linear-gradient(45deg,#6a00ff,#b266ff);
+color:white;
+padding:20px;
+font-size:24px;
+text-align:center;
+}
+
+.container{
+padding:15px;
+}
+
+.produto{
+
+background:white;
+border-radius:12px;
+margin-bottom:15px;
+display:flex;
+gap:12px;
+padding:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+
+}
+
+.produto img{
+
+width:90px;
+height:90px;
+border-radius:10px;
+object-fit:cover;
+
+}
+
+.info{
+flex:1;
+}
+
+.preco{
+
+color:#6a00ff;
+font-weight:bold;
+
+}
+
+button{
+
+background:#6a00ff;
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+
+}
+
+#carrinho{
+
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:white;
+padding:12px;
+box-shadow:0 -4px 10px rgba(0,0,0,0.2);
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+
 </style>
+
 </head>
+
 <body>
 
 <header>
-  <div style="display:flex;align-items:center;gap:12px">
-    <img src="" alt="" style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.08)" />
-  </div>
-  <h1>🍽️ Seu Restaurante - Cardápio</h1>
-  <div class="topbar-right">
-    <div class="admin" onclick="openAdmin()">⚙️ Painel</div>
-  </div>
+🍽️ Cardápio do Restaurante
 </header>
 
-<main class="container">
-  <div class="categories" id="cats">
-    <button class="active" onclick="setCategory('Refeições')">Refeições</button>
-    <button onclick="setCategory('Lanches')">Lanches</button>
-    <button onclick="setCategory('Salgados')">Salgados</button>
-    <button onclick="setCategory('Bebidas')">Bebidas</button>
-  </div>
+<div class="container">
 
-  <section class="grid" id="cardapio">
-    <!-- cards gerados por JS -->
-  </section>
-</main>
+<div class="produto">
 
-<div class="cartbar" id="cartbar">
-  <div>
-    <span class="cart-summary">Carrinho</span>
-    <span id="cartCount" class="badge">0</span>
-    <div class="small" id="cartTotalText">0 itens — R$ 0.00</div>
-  </div>
-  <div style="display:flex;gap:8px">
-    <button class="btn" onclick="openCart()">Ver Carrinho</button>
-    <button class="btn" onclick="checkout()">Finalizar (WhatsApp)</button>
-  </div>
+<img src="9752.jpg">
+
+<div class="info">
+
+<h3>Vatapá</h3>
+
+<p>Delicioso vatapá acompanhado de arroz</p>
+
+<p class="preco">R$ 10,00</p>
+
+<button onclick="add('Vatapá',10)">
+Adicionar
+</button>
+
+</div>
 </div>
 
-<!-- painel do dono -->
-<div class="panel" id="adminPanel" aria-hidden="true">
-  <div class="inner">
-    <h2>Painel do Dono</h2>
-    <div class="small">Senha: <b>1234</b> (mudar depois)</div>
+<div class="produto">
 
-    <hr/>
+<img src="9739.jpg">
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
-      <div style="flex:1;min-width:220px">
-        <label class="small">Nome</label>
-        <input type="text" id="inpNome" placeholder="Ex: Vatapá" />
-        <label class="small">Preço (R$)</label>
-        <input type="number" id="inpPreco" placeholder="10" />
-        <label class="small">Categoria</label>
-        <select id="inpCat">
-          <option>Refeições</option>
-          <option>Lanches</option>
-          <option>Salgados</option>
-          <option>Bebidas</option>
-        </select>
-        <label class="small">URL da imagem / Nome do arquivo (ex: 9752.jpg)</label>
-        <input type="text" id="inpFoto" placeholder="9752.jpg" />
-        <button class="btn" style="margin-top:6px" onclick="addProductFromAdmin()">Adicionar produto</button>
-      </div>
+<div class="info">
 
-      <div style="flex:1;min-width:260px">
-        <h3>Produtos existentes</h3>
-        <div id="productList" class="product-list"></div>
-      </div>
-    </div>
+<h3>Chapa Mista</h3>
 
-    <hr/>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-      <button onclick="closeAdmin()">Fechar</button>
-    </div>
-  </div>
+<p>Arroz, feijão, macarrão e carne na chapa</p>
+
+<p class="preco">R$ 15,00</p>
+
+<button onclick="add('Chapa Mista',15)">
+Adicionar
+</button>
+
+</div>
 </div>
 
-<!-- modal simples do carrinho -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:90;padding:20px;">
-  <div style="max-width:720px;margin:40px auto;background:#fff;padding:16px;border-radius:10px;">
-    <h3>Seu Carrinho</h3>
-    <div id="cartItems"></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-      <div><b>Total:</b> R$ <span id="cartTotal">0.00</span></div>
-      <div style="display:flex;gap:8px">
-        <button onclick="closeCart()">Fechar</button>
-        <button class="btn" onclick="checkout()">Enviar pedido (WhatsApp)</button>
-      </div>
-    </div>
-  </div>
+<div class="produto">
+
+<img src="340.jpg">
+
+<div class="info">
+
+<h3>Empanado</h3>
+
+<p>Empanado com arroz, feijão e macarrão</p>
+
+<p class="preco">R$ 10,00</p>
+
+<button onclick="add('Empanado',10)">
+Adicionar
+</button>
+
+</div>
 </div>
 
-<footer>
-  Dica: troque o número do WhatsApp dentro da função <code>checkout()</code> para o seu número.
-</footer>
+</div>
+
+<div id="carrinho">
+
+<span id="itens">Carrinho vazio</span>
+
+<button onclick="pedido()">
+Fazer pedido
+</button>
+
+</div>
 
 <script>
-/*
-  Produtos iniciais. Aqui adicionei os 3 itens que você pediu.
-  Observação sobre imagens:
-  - Coloque os arquivos 9752.jpg, 9739.jpg e 340.jpg na mesma pasta do index.html.
-  - Se preferir, altere os nomes no campo 'foto' abaixo para corresponder aos nomes de arquivo que você usar.
-*/
-let produtos = JSON.parse(localStorage.getItem('produtos_v2')) || [
-  {
-    id: cryptoRandomId(),
-    nome: "Vatapá",
-    preco: 10.00,
-    categoria: "Refeições",
-    foto: "9752.jpg"   // arquivo que você carregou (vatapa)
-  },
-  {
-    id: cryptoRandomId(),
-    nome: "Chapa Mista",
-    preco: 15.00,
-    categoria: "Refeições",
-    foto: "9739.jpg"   // arquivo que você carregou (chapa)
-  },
-  {
-    id: cryptoRandomId(),
-    nome: "Empanado",
-    preco: 10.00,
-    categoria: "Refeições",
-    foto: "340.jpg"    // arquivo que você carregou (empanado)
-  },
-  // exemplos extras (mantive alguns para preencher o cardápio)
-  { id: cryptoRandomId(), nome:"Arroz + Feijão + Bife", preco:12.00, categoria:"Refeições", foto:"https://i.imgur.com/sJ3CT4V.png" },
-  { id: cryptoRandomId(), nome:"Hambúrguer Simples", preco:12.00, categoria:"Lanches", foto:"https://i.imgur.com/0umadnY.png" },
-  { id: cryptoRandomId(), nome:"Refrigerante 350ml", preco:6.00, categoria:"Bebidas", foto:"https://i.imgur.com/1bX5QH6.png" }
-];
 
-let carrinho = JSON.parse(localStorage.getItem('carrinho_v2')) || [];
+let carrinho=[]
 
-let categoriaAtual = "Refeições";
+function add(nome,preco){
 
-function cryptoRandomId(){
-  // id simples
-  return 'id_'+Math.random().toString(36).slice(2,9);
+carrinho.push({nome,preco})
+
+document.getElementById("itens").innerText=
+carrinho.length+" item(s) no carrinho"
+
 }
 
-function saveState(){
-  localStorage.setItem('produtos_v2', JSON.stringify(produtos));
-  localStorage.setItem('carrinho_v2', JSON.stringify(carrinho));
+function pedido(){
+
+if(carrinho.length==0){
+
+alert("Adicione um item primeiro")
+
+return
+
 }
 
-function formatMoney(v){ return v.toFixed(2).replace('.',','); }
+let texto="Pedido:%0A"
 
-function renderCardapio(){
-  const container = document.getElementById('cardapio');
-  container.innerHTML = '';
-  const lista = produtos.filter(p => p.categoria === categoriaAtual);
-  if(lista.length === 0){
-    container.innerHTML = '<div style="padding:18px;background:#fff;border-radius:10px">Nenhum item nessa categoria.</div>';
-    return;
-  }
-  lista.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `
-      <div class="thumb"><img src="${escapeHtml(p.foto)}" alt="${escapeHtml(p.nome)}" onerror="this.onerror=null;this.src='https://i.imgur.com/placeholder.png'"></div>
-      <div class="meta">
-        <h3>${escapeHtml(p.nome)}</h3>
-        <p class="small">${escapeHtml(p.categoria)}</p>
-        <div class="price">R$ ${formatMoney(Number(p.preco))}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn" onclick="adicionarCarrinho('${p.id}')">Adicionar</button>
-        <button onclick="verDetalhes('${p.id}')" style="background:#eee;color:#111;border-radius:8px;padding:6px">Detalhes</button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
-}
+let total=0
 
-function setCategory(cat){
-  categoriaAtual = cat;
-  // marcar botão ativo
-  Array.from(document.querySelectorAll('.categories button')).forEach(b => {
-    b.classList.toggle('active', b.textContent.trim() === cat);
-  });
-  renderCardapio();
-}
+carrinho.forEach(p=>{
 
-function adicionarCarrinho(id){
-  const p = produtos.find(x => x.id === id);
-  if(!p) return alert('Produto não encontrado');
-  // adicionar com quantidade 1
-  const exists = carrinho.find(it => it.id === id);
-  if(exists) exists.qtd++;
-  else carrinho.push({ id:p.id, nome:p.nome, preco:Number(p.preco), qtd:1 });
-  saveState();
-  atualizarCartBar();
-}
+texto+=p.nome+" - R$"+p.preco+"%0A"
 
-function atualizarCartBar(){
-  const totalItens = carrinho.reduce((s,i)=>s+i.qtd,0);
-  const totalValor = carrinho.reduce((s,i)=>s + (i.preco*i.qtd),0);
-  document.getElementById('cartCount').innerText = totalItens;
-  document.getElementById('cartTotalText').innerText = ${totalItens} itens — R$ ${formatMoney(totalValor)};
-  document.getElementById('cartTotal').innerText = formatMoney(totalValor);
-}
+total+=p.preco
 
-function verDetalhes(id){
-  const p = produtos.find(x=>x.id===id);
-  if(!p) return;
-  alert(${p.nome}\nR$ ${formatMoney(Number(p.preco))}\nCategoria: ${p.categoria});
-}
+})
 
-/* ---------- Admin ---------- */
-function openAdmin(){
-  const s = prompt('Digite a senha do painel:');
-  if(s !== '1234') return alert('Senha incorreta.');
-  document.getElementById('adminPanel').style.display = 'block';
-  renderAdminProducts();
-}
-function closeAdmin(){
-  document.getElementById('adminPanel').style.display = 'none';
-}
-function addProductFromAdmin(){
-  const nome = document.getElementById('inpNome').value.trim();
-  const preco = parseFloat(document.getElementById('inpPreco').value);
-  const cat = document.getElementById('inpCat').value;
-  const foto = document.getElementById('inpFoto').value.trim();
-  if(!nome || isNaN(preco) || !foto) return alert('Preencha nome, preço e foto (URL ou nome do arquivo).');
-  produtos.push({ id: cryptoRandomId(), nome, preco: Number(preco), categoria: cat, foto });
-  saveState();
-  renderAdminProducts();
-  renderCardapio();
-  document.getElementById('inpNome').value=''; document.getElementById('inpPreco').value=''; document.getElementById('inpFoto').value='';
-  alert('Produto adicionado!');
-}
-function renderAdminProducts(){
-  const list = document.getElementById('productList');
-  list.innerHTML = '';
-  produtos.forEach(p=>{
-    const el = document.createElement('div');
-    el.className = 'product-item';
-    el.innerHTML = `<img src="${escapeHtml(p.foto)}" onerror="this.onerror=null;this.src='https://i.imgur.com/placeholder.png'">
-                    <div style="flex:1">
-                      <div style="font-weight:700">${escapeHtml(p.nome)}</div>
-                      <div class="small">R$ ${formatMoney(Number(p.preco))} — ${escapeHtml(p.categoria)}</div>
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:6px">
-                      <button style="padding:6px;border-radius:8px" onclick="editProduct('${p.id}')">Editar</button>
-                      <button style="padding:6px;border-radius:8px" onclick="removeProduct('${p.id}')">Remover</button>
-                    </div>`;
-    list.appendChild(el);
-  });
-}
-function editProduct(id){
-  const p = produtos.find(x=>x.id===id);
-  if(!p) return;
-  const novoNome = prompt('Nome:', p.nome);
-  if(novoNome === null) return;
-  const novoPreco = prompt('Preço (use ponto ou vírgula):', String(p.preco).replace('.',','));
-  if(novoPreco === null) return;
-  const novoFoto = prompt('Foto (URL ou nome do arquivo):', p.foto);
-  if(novoFoto === null) return;
-  p.nome = novoNome.trim();
-  p.preco = parseFloat(String(novoPreco).replace(',','.')) || p.preco;
-  p.foto = novoFoto.trim();
-  saveState(); renderAdminProducts(); renderCardapio();
-}
-function removeProduct(id){
-  if(!confirm('Remover este produto?')) return;
-  produtos = produtos.filter(p=>p.id!==id);
-  saveState(); renderAdminProducts(); renderCardapio();
-}
+texto+="%0ATotal: R$"+total
 
-/* ---------- Carrinho modal e checkout ---------- */
-function openCart(){
-  const modal = document.getElementById('cartModal');
-  const items = document.getElementById('cartItems');
-  items.innerHTML = '';
-  if(carrinho.length===0){ items.innerHTML = '<div class="small">Seu carrinho está vazio.</div>'; modal.style.display='block'; return; }
-  carrinho.forEach(it=>{
-    const row = document.createElement('div');
-    row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center';
-    row.style.padding='8px 6px';
-    row.innerHTML = `<div>${escapeHtml(it.nome)} <span class="small">x${it.qtd}</span></div>
-                     <div>R$ ${formatMoney(it.preco*it.qtd)} &nbsp;
-                       <button onclick="changeQty('${it.id}',-1)" style="padding:6px">−</button>
-                       <button onclick="changeQty('${it.id}',1)" style="padding:6px">+</button>
-                     </div>`;
-    items.appendChild(row);
-  });
-  document.getElementById('cartModal').style.display='block';
-  atualizarCartBar();
-}
-function closeCart(){ document.getElementById('cartModal').style.display='none'; }
-function changeQty(id,delta){
-  const it = carrinho.find(x=>x.id===id);
-  if(!it) return;
-  it.qtd += delta;
-  if(it.qtd <= 0) carrinho = carrinho.filter(x=>x.id!==id);
-  saveState(); openCart(); atualizarCartBar();
-}
-function checkout(){
-  if(carrinho.length === 0){ alert('Carrinho vazio'); return; }
-  let msg = 'Pedido:%0A';
-  carrinho.forEach(it => { msg += ${it.nome} x${it.qtd} — R$ ${formatMoney(it.preco*it.qtd)}%0A; });
-  const total = carrinho.reduce((s,i)=>s + (i.preco*i.qtd),0);
-  msg += %0ATotal: R$ ${formatMoney(total)}%0A;
-  msg += %0ANome:%0ATelefone:%0AEndereço (se for entrega):%0AObservações:%0A;
-  // TROQUE o número abaixo para o seu WhatsApp (formato internacional sem +, ex: 5591987654321)
-  const waNumber = '5591999999999';
-  const waUrl = 'https://wa.me/' + waNumber + '?text=' + msg;
-  window.open(waUrl, '_blank');
-}
+window.open("https://wa.me/5591999999999?text="+texto)
 
-/* ---------- util ---------- */
-function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-function atualizarCartBar(){
-  const totalItens = carrinho.reduce((s,i)=>s+i.qtd,0);
-  const totalValor = carrinho.reduce((s,i)=>s + (i.preco*i.qtd),0);
-  document.getElementById('cartCount').innerText = totalItens;
-  document.getElementById('cartTotalText').innerText = ${totalItens} itens — R$ ${formatMoney(totalValor)};
-  document.getElementById('cartTotal').innerText = formatMoney(totalValor);
-  // persistir
-  saveState();
 }
-
-/* inicial render */
-renderCardapio();
-renderAdminProducts();
-atualizarCartBar();
 
 </script>
+
 </body>
 </html>
