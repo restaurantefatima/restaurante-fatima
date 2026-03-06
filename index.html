@@ -234,12 +234,21 @@ let dados=JSON.parse(localStorage.getItem("menu"))||{
   if(dados.categorias["Refeições"]){
 mostrarCategoria("Refeições")
 }
-{nome:"Chapa mista",preco:20,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
-{nome:"Empanado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
-{nome:"Bife acebolado",preco:18,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
-{nome:"Cozidão",preco:22,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
-{nome:"Assado de panela",preco:22,foto:"https://i.imgur.com/5KXKQ9k.jpg"},
-{nome:"Vatapá",preco:15,foto:"https://i.imgur.com/5KXKQ9k.jpg"}
+let dados=JSON.parse(localStorage.getItem("menu"))||{
+
+categorias:{
+"Refeições":[
+{nome:"Chapa mista",preco:20,foto:"https://via.placeholder.com/400"},
+{nome:"Empanado",preco:18,foto:"https://via.placeholder.com/400"},
+{nome:"Bife acebolado",preco:18,foto:"https://via.placeholder.com/400"},
+{nome:"Cozidão",preco:22,foto:"https://via.placeholder.com/400"},
+{nome:"Assado de panela",preco:22,foto:"https://via.placeholder.com/400"},
+{nome:"Vatapá",preco:15,foto:"https://via.placeholder.com/400"}
+]
+
+}
+
+}
 ]
 }
 
